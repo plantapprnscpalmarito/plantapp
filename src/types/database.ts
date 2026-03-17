@@ -39,6 +39,7 @@ export interface Database {
           name: string
           owner: string | null
           boundary: any // Geometry
+          deleted_at: string | null
           created_at: string
           updated_at: string
         }
@@ -48,6 +49,7 @@ export interface Database {
           name: string
           owner?: string | null
           boundary: any
+          deleted_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -57,6 +59,7 @@ export interface Database {
           name?: string
           owner?: string | null
           boundary?: any
+          deleted_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -70,8 +73,16 @@ export interface Database {
           elevation: number | null
           seedling_source: string | null
           responsible_person: string | null
+          initial_height: number | null
+          initial_diameter: number | null
+          condition: 'healthy' | 'stressed' | 'dead' | null
+          planting_method: string | null
+          soil_condition: string | null
+          notes: string | null
           planted_at: string
           created_at: string
+          updated_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -81,8 +92,16 @@ export interface Database {
           elevation?: number | null
           seedling_source?: string | null
           responsible_person?: string | null
+          initial_height?: number | null
+          initial_diameter?: number | null
+          condition?: 'healthy' | 'stressed' | 'dead' | null
+          planting_method?: string | null
+          soil_condition?: string | null
+          notes?: string | null
           planted_at?: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -92,7 +111,67 @@ export interface Database {
           elevation?: number | null
           seedling_source?: string | null
           responsible_person?: string | null
+          initial_height?: number | null
+          initial_diameter?: number | null
+          condition?: 'healthy' | 'stressed' | 'dead' | null
+          planting_method?: string | null
+          soil_condition?: string | null
+          notes?: string | null
           planted_at?: string
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
+      species: {
+        Row: {
+          id: string
+          common_name: string
+          scientific_name: string
+          family: string | null
+          taxonomic_group: string | null
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
+        }
+        Insert: {
+          id?: string
+          common_name: string
+          scientific_name: string
+          family?: string | null
+          taxonomic_group?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+        Update: {
+          id?: string
+          common_name?: string
+          scientific_name?: string
+          family?: string | null
+          taxonomic_group?: string | null
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+        }
+      }
+      tree_photos: {
+        Row: {
+          id: string
+          tree_id: string
+          url: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tree_id: string
+          url: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tree_id?: string
+          url?: string
           created_at?: string
         }
       }

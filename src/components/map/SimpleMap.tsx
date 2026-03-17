@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import '@geoman-io/leaflet-geoman-free'
@@ -9,8 +9,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 
 // Fix for default marker icons in Leaflet with Next.js
 const fixLeafletIcons = () => {
-  // @ts-ignore
-  if (typeof window !== 'undefined' && L.BaseIcon) {
+  if (typeof window !== 'undefined' && L.Icon.Default) {
     delete (L.Icon.Default.prototype as any)._getIconUrl
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -65,8 +64,17 @@ function GeomanControls({
   return null
 }
 
+interface MapPoint {
+  id?: string | number
+  lat: number
+  lng: number
+  label?: string
+  color?: string
+  radius?: number
+}
+
 interface SimpleMapProps {
-  points?: { lat: number; lng: number; label?: string }[]
+  points?: MapPoint[]
   shapes?: any[]
   center?: [number, number]
   zoom?: number
@@ -100,7 +108,7 @@ const SimpleMap: React.FC<SimpleMapProps> = ({
   )
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-slate-100 relative" style={{ height }}>
+    <div className="w-full overflow-hidden rounded-2xl border border-slate-100 relative shadow-inner" style={{ height }}>
       <MapContainer 
         center={center} 
         zoom={zoom} 
@@ -117,19 +125,35 @@ const SimpleMap: React.FC<SimpleMapProps> = ({
         />
         
         {shapes.map((shape, idx) => (
-          <GeoJSON key={idx} data={shape} style={{ color: '#10b981', weight: 2, fillOpacity: 0.1 }} />
+          <GeoJSON 
+            key={idx} 
+            data={shape} 
+            style={{ color: '#10b981', weight: 2, fillOpacity: 0.1, dashArray: '5, 5' }} 
+          />
         ))}
 
         {points.map((p, i) => (
-          <Marker key={i} position={[p.lat, p.lng]}>
+          <CircleMarker 
+            key={p.id || i} 
+            center={[p.lat, p.lng]} 
+            radius={p.radius || 6}
+            pathOptions={{ 
+              color: p.color || '#10b981', 
+              fillColor: p.color || '#10b981', 
+              fillOpacity: 0.8,
+              weight: 2,
+              stroke: true,
+            }}
+          >
             {p.label && (
               <Popup>
-                <div className="p-1">
-                  <p className="text-xs font-bold text-slate-800">{p.label}</p>
+                <div className="p-2 min-w-[120px]">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Individuo</p>
+                   <p className="text-xs font-black text-slate-800">{p.label}</p>
                 </div>
               </Popup>
             )}
-          </Marker>
+          </CircleMarker>
         ))}
       </MapContainer>
     </div>
